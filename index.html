@@ -15,6 +15,18 @@
     <title>My PDF viewer</title>
   </head>
   <body>
+    <div class="top-bar">
+      <button class="btn" id="prev-page">
+        <i class="fas fa-arrow-circle-left"></i> Previous Page
+      </button>
+      <button class="btn" id="next-page">
+        <i class="fas fa-arrow-circle-right"></i> Next Page
+      </button>
+      <span class="page-info">
+        Page <span id="page-num"></span> of <span id="page-count"></span>
+      </span>
+    </div>
+    <canvas id="pdf-render"></canvas>
     <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
     <script src="js/app.js"></script>
   </body>
