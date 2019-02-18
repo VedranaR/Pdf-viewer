@@ -1,4 +1,4 @@
-const url = "../docs/Lorem.pdf"; //shortcut for the sample pdf document in the repo
+const url = "../docs/Lorem1.pdf"; //shortcut for the sample pdf document in the repo
 
 //global variables that are gonna be reassigned
 let pdfDoc = null, //represents the document we're gonna get with pdf.js
@@ -70,12 +70,24 @@ const showNextPage = () => {
 
 //Get document - we're calling render from inside
 //pdfjsLib is object from the pdf.js cdn
-pdfjsLib.getDocument(url).promise.then(pdfDoc_ => {
-  pdfDoc = pdfDoc_;
-  document.querySelector("#page-count").textContent = pdfDoc.numPages;
+pdfjsLib
+  .getDocument(url)
+  .promise.then(pdfDoc_ => {
+    pdfDoc = pdfDoc_;
+    document.querySelector("#page-count").textContent = pdfDoc.numPages;
 
-  renderPage(pageNum);
-});
+    renderPage(pageNum);
+  })
+  .catch(err => {
+    //display error
+    const div = document.createElement("div");
+    div.className = "error";
+    div.appendChild(document.createTextNode(err.message));
+    document.querySelector("body").insertBefore(div, canvas);
+
+    //and remove the navigation bar
+    document.querySelector("#top-bar").style.display = "none";
+  });
 
 //onclick navigation - button events
 document
