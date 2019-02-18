@@ -1,4 +1,4 @@
-const url = "../docs/Lorem.pdf";
+const url = "../docs/Lorem.pdf"; //shortcut for the sample pdf document in the repo
 
 //global variables that are gonna be reassigned
 let pdfDoc = null, //represents the document we're gonna get with pdf.js
@@ -6,21 +6,22 @@ let pdfDoc = null, //represents the document we're gonna get with pdf.js
   pageIsRendering = false, //this is gonna tell us the state of page render
   pageNumIsPending = null; //this is gonna show if we're fetching other multiple pages
 
-const scale = 1.5,
-  canvas = document.querySelector("#pdf-render"),
+const scale = 1.5, //defines the amount of zoom
+  canvas = document.querySelector("#pdf-render"), //creating the html canvas
   context = canvas.getContext("2d"); //fetching a pdf and putting it in this canvas
 
-//Render the page
+//rendering the page
 const renderPage = num => {
   pageIsRendering = true;
 
-  //Geth the page
+  //fetch the first page
   pdfDoc.getPage(num).then(page => {
-    //set the scale
+    //prepare canvas using PDF page dimensions
     const viewport = page.getViewport({ scale: scale });
-    canvas.height = viewport.height;
+    canvas.height = viewport.height; //stretching canvas to cover the viewport
     canvas.width = viewport.width;
 
+    //Render PDF page into canvas context
     const renderContext = {
       canvasContext: context,
       viewport: viewport
@@ -34,7 +35,37 @@ const renderPage = num => {
         pageNumIsPending = null;
       }
     });
+
+    //output current page
+    document.querySelector("#page-num").textContent = num;
   });
+};
+
+//check if there are pages rendering
+const checkIfPagesRendering = num => {
+  if (pageIsRendering) {
+    pageNumIsPending = num;
+  } else {
+    renderPage(num);
+  }
+};
+
+//show previous page
+const showPreviousPage = () => {
+  if (pageNum <= 1) {
+    return; //do nothing because there's no smaller page num
+  }
+  pageNum--;
+  checkIfPagesRendering(pageNum);
+};
+
+//show next page
+const showNextPage = () => {
+  if (pageNum >= pdfDoc.numPages) {
+    return; //do nothing because there's no greater page num
+  }
+  pageNum++;
+  checkIfPagesRendering(pageNum);
 };
 
 //Get document - we're calling render from inside
@@ -45,3 +76,9 @@ pdfjsLib.getDocument(url).promise.then(pdfDoc_ => {
 
   renderPage(pageNum);
 });
+
+//onclick navigation - button events
+document
+  .querySelector("#prev-page")
+  .addEventListener("click", showPreviousPage);
+document.querySelector("#next-page").addEventListener("click", showNextPage);
