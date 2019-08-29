@@ -1,4 +1,4 @@
-const url = "../docs/Lorem.pdf"; //shortcut for the sample pdf document in the repo
+const url = "../Pdf-viewer/docs/Lorem.pdf"; //shortcut for the sample pdf document in the repo
 
 //global variables that are gonna be reassigned
 let pdfDoc = null, //represents the document we're gonna get with pdf.js
